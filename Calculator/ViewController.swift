@@ -120,15 +120,30 @@ class ViewController: UIViewController {
            calculatorResults.text = ""
        }
        
-       func calculateResult() {
-           // Assuming a simple calculation without error handling for simplicity
-           let expression = NSExpression(format: workings)
-           let result = expression.expressionValue(with: nil, context: nil) as? Double
-           if let result = result {
-               calculatorResults.text = "\(result)"
-           } else {
-               calculatorResults.text = "Error"
-           }
-       }
+    func calculateResult() {
+        // Replace ÷ with / for division
+        let expressionString = workings.replacingOccurrences(of: "÷", with: "/")
+        
+        // Check for division by zero
+        if expressionString.contains("/0") {
+            calculatorResults.text = "Error"
+            return
+        }
+        
+        // Evaluate the expression
+        let expression = NSExpression(format: expressionString)
+        if let result = expression.expressionValue(with: nil, context: nil) as? Double {
+            if result.isFinite {
+                calculatorResults.text = "\(result)"
+            } else {
+                calculatorResults.text = "Error"
+            }
+        } else {
+            calculatorResults.text = "Error"
+        }
+    }
+
+
+
 }
 
